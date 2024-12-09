@@ -15,7 +15,7 @@ export default class CourseFaculty extends BaseModel {
   declare facultyId: number
 
   @column()
-  declare assignedDate: Date
+  declare assignedDate: Date | null
 
   @column()
   declare role: 'lead' | 'assistant'

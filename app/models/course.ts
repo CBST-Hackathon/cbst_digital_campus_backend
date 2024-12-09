@@ -19,7 +19,7 @@ export default class Course extends BaseModel {
   declare code: string
 
   @column()
-  declare desciption: string
+  declare desciption: string | null
 
   @column()
   declare credits: number

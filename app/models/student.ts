@@ -27,7 +27,7 @@ export default class Student extends BaseModel {
   declare yearOfAdmission: number
 
   @column()
-  declare current_semester: number
+  declare currentSemester: number
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime

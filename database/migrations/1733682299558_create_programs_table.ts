@@ -6,9 +6,19 @@ export default class extends BaseSchema {
   async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
-
-      table.timestamp('created_at')
-      table.timestamp('updated_at')
+      table.string('name', 255).notNullable()
+      table
+        .integer('department_id')
+        .notNullable()
+        .unsigned()
+        .references('id')
+        .inTable('departments')
+        .onDelete('CASCADE')
+      table.integer('duration').notNullable()
+      table.decimal('min_cgpa', 3, 2).notNullable()
+      table.enum('degree_type', ['Bachelor', 'Master', 'PhD']).notNullable()
+      table.timestamp('created_at', { useTz: true }).defaultTo(this.now())
+      table.timestamp('updated_at', { useTz: true }).defaultTo(this.now())
     })
   }
 

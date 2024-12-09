@@ -6,9 +6,25 @@ export default class extends BaseSchema {
   async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
-
-      table.timestamp('created_at')
-      table.timestamp('updated_at')
+      table
+        .integer('user_id')
+        .notNullable()
+        .unsigned()
+        .references('id')
+        .inTable('users')
+        .onDelete('CASCADE')
+      table.string('designation', 100).notNullable()
+      table
+        .integer('department_id')
+        .notNullable()
+        .unsigned()
+        .references('id')
+        .inTable('departments')
+        .onDelete('CASCADE')
+      table.date('joining_date').nullable()
+      table.string('office_location', 255).nullable()
+      table.timestamp('created_at', { useTz: true }).defaultTo(this.now())
+      table.timestamp('updated_at', { useTz: true }).defaultTo(this.now())
     })
   }
 

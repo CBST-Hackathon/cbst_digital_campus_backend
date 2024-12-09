@@ -20,7 +20,7 @@ export default class Faculty extends BaseModel {
   declare departmentId: number
 
   @column()
-  declare joiningDate: Date
+  declare joiningDate: Date | null
 
   @column()
   declare officeLocation: string | null
