@@ -28,3 +28,12 @@ export const loginValidator = vine.compile(
     password: vine.string().trim().minLength(8),
   })
 )
+
+export const resetPasswordValidator = vine.compile(
+  vine.object({
+    password: vine.string().trim().minLength(8).confirmed({
+      confirmationField: 'passwordConfirmation',
+    }),
+    token: vine.string().trim(),
+  })
+)

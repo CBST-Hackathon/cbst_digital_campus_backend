@@ -7,8 +7,13 @@ import CourseFaculty from './course_faculty.ts'
 import Enrollment from './enrollment.ts'
 import Grade from './grade.ts'
 import ClassSession from './class_session.ts'
+import { Filterable } from 'adonis-lucid-filter'
+import { compose } from '@adonisjs/core/helpers'
+import CourseFilter from './filters/course_filter.ts'
 
-export default class Course extends BaseModel {
+export default class Course extends compose(BaseModel, Filterable) {
+  static $filter = () => CourseFilter
+
   @column({ isPrimary: true })
   declare id: number
 

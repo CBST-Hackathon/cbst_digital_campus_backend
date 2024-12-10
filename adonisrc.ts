@@ -14,6 +14,8 @@ export default defineConfig({
     () => import('@adonisjs/core/commands'),
     () => import('@adonisjs/lucid/commands'),
     () => import('@jrmc/adonis-attachment/commands'),
+    () => import('adonis-lucid-filter/commands'),
+    () => import('@adonisjs/mail/commands'),
   ],
 
   /*
@@ -39,6 +41,8 @@ export default defineConfig({
     () => import('@adonisjs/drive/drive_provider'),
     () => import('@adonisjs/redis/redis_provider'),
     () => import('@jrmc/adonis-attachment/attachment_provider'),
+    () => import('adonis-lucid-filter/provider'),
+    () => import('@adonisjs/mail/mail_provider'),
   ],
 
   /*

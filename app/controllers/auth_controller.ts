@@ -1,8 +1,9 @@
-// import Token from '#models/token'
 import errorHandler from '#exceptions/error_handler'
+import Token from '#models/token'
 import User from '#models/user'
-import { loginValidator, registerValidator } from '#validators/auth'
+import { loginValidator, registerValidator, resetPasswordValidator } from '#validators/auth'
 import type { HttpContext } from '@adonisjs/core/http'
+// import mail from '@adonisjs/mail/services/main'
 
 export default class AuthController {
   async register(ctx: HttpContext) {
@@ -40,7 +41,7 @@ export default class AuthController {
         expiresIn: '30 days',
       })
 
-      return response.ok({ login: true, message: 'Login successful', token })
+      return response.ok({ login: true, message: 'Login successful', token, user })
     } catch (error) {
       errorHandler(error, ctx, 'Login Error')
     }
@@ -81,49 +82,51 @@ export default class AuthController {
   //     }
   //   }
 
-  //   async forgotPassword(ctx: HttpContext) {
-  //     const { request, response } = ctx
-  //     try {
-  //       const { email } = request.all()
-  //       if (!email) {
-  //         return response.badRequest({
-  //           success: false,
-  //           message: 'email is not found',
-  //         })
-  //       }
-  //       const user = await User.findByOrFail('email', email)
-  //       if (!user) {
-  //         return response.badRequest({ success: false, message: 'User is not found' })
-  //       }
-  //       const token = await Token.generatePasswordResetToken(user)
-  //       await user.load('customer')
-  //       await mail.sendLater(new ResetPasswordNotification(user, token))
+  async forgotPassword(ctx: HttpContext) {
+    const { request, response } = ctx
+    try {
+      const { email } = request.all()
+      if (!email) {
+        return response.badRequest({
+          success: false,
+          message: 'email is not found',
+        })
+      }
+      const user = await User.findByOrFail('email', email)
+      if (!user) {
+        return response.badRequest({ success: false, message: 'User is not found' })
+      }
+      const token = await Token.generatePasswordResetToken(user)
+      console.log('token----', token)
+      await user.load('customer')
+      //mail sending logic
+      // await mail.sendLater(new ResetPasswordNotification(user, token))
 
-  //       return response.json({ success: true, message: 'A token is sent to your mail' })
-  //     } catch (error) {
-  //       errorHandler(error, ctx, 'Forgot Password Error')
-  //     }
-  //   }
+      return response.json({ success: true, message: 'A token is sent to your mail' })
+    } catch (error) {
+      errorHandler(error, ctx, 'Forgot Password Error')
+    }
+  }
 
-  //   async resetPassword(ctx: HttpContext) {
-  //     const { request, response } = ctx
-  //     try {
-  //       const { password, token } = await request.validateUsing(resetPasswordValidator)
-  //       const record = await Token.verify(token, 'PASSWORD_RESET')
-  //       if (!record) {
-  //         return response.badRequest({ success: false, message: 'Token is invalid' })
-  //       }
-  //       const user = await User.find(record.userId)
-  //       if (!user) {
-  //         return response.badRequest({ success: false, message: 'User is not found' })
-  //       }
-  //       user.password = password
-  //       user.save()
-  //       await record.delete()
+  async resetPassword(ctx: HttpContext) {
+    const { request, response } = ctx
+    try {
+      const { password, token } = await request.validateUsing(resetPasswordValidator)
+      const record = await Token.verify(token, 'PASSWORD_RESET')
+      if (!record) {
+        return response.badRequest({ success: false, message: 'Token is invalid' })
+      }
+      const user = await User.find(record.userId)
+      if (!user) {
+        return response.badRequest({ success: false, message: 'User is not found' })
+      }
+      user.password = password
+      user.save()
+      await record.delete()
 
-  //       return response.json({ success: true, message: 'Password updated successfully' })
-  //     } catch (error) {
-  //       errorHandler(error, ctx, 'Reset Password Error')
-  //     }
-  //   }
+      return response.json({ success: true, message: 'Password updated successfully' })
+    } catch (error) {
+      errorHandler(error, ctx, 'Reset Password Error')
+    }
+  }
 }
