@@ -3,8 +3,13 @@ import { BaseModel, column, hasMany } from '@adonisjs/lucid/orm'
 import type { HasMany } from '@adonisjs/lucid/types/relations'
 import Faculty from './faculty.ts'
 import Course from './course.ts'
+import { Filterable } from 'adonis-lucid-filter'
+import { compose } from '@adonisjs/core/helpers'
+import DepartmentFilter from './filters/department_filter.ts'
 
-export default class Department extends BaseModel {
+export default class Department extends compose(BaseModel, Filterable) {
+  static $filter = () => DepartmentFilter
+
   @column({ isPrimary: true })
   declare id: number
 

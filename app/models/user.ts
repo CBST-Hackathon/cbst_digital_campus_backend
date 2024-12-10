@@ -10,13 +10,17 @@ import { attachment, Attachmentable } from '@jrmc/adonis-attachment'
 import type { Attachment } from '@jrmc/adonis-attachment/types/attachment'
 import Faculty from './faculty.ts'
 import Student from './student.ts'
+import { Filterable } from 'adonis-lucid-filter'
+import UserFilter from './filters/user_filter.ts'
 
 const AuthFinder = withAuthFinder(() => hash.use('scrypt'), {
   uids: ['email'],
   passwordColumnName: 'password',
 })
 
-export default class User extends compose(BaseModel, AuthFinder, Attachmentable) {
+export default class User extends compose(BaseModel, AuthFinder, Attachmentable, Filterable) {
+  static $filter = () => UserFilter
+
   @column({ isPrimary: true })
   declare id: number
 
